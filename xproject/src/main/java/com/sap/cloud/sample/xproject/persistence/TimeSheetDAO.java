@@ -29,6 +29,7 @@ public class TimeSheetDAO extends AbstractDAO {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<TimeSheet> getTimeSheetsForMemberInProject(long projectId, long memberId) {
 		EntityManager em = createEntityManager();
 		try {

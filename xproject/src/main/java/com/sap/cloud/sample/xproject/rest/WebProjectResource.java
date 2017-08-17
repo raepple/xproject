@@ -300,6 +300,7 @@ public class WebProjectResource extends AbstractResource {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private int sendInvitation(String message) {
 		// call SCI invitation API
 		Context ctx;

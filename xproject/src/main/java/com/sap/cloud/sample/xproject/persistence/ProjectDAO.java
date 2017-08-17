@@ -21,6 +21,7 @@ public class ProjectDAO extends AbstractDAO {
 
 	private static Logger logger = LoggerFactory.getLogger(ProjectDAO.class);
 
+	@SuppressWarnings("unchecked")
 	public List<Project> getAllProjects() {
 		EntityManager em = createEntityManager();
 		try {
@@ -32,6 +33,7 @@ public class ProjectDAO extends AbstractDAO {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Project> getProjectsJoinedByCurrentUser(User currentUser) {
 		EntityManager em = createEntityManager();
 		try {		
