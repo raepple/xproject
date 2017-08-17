@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+	<display-name>xProject</display-name>
+
+	<!-- DB and resource references for required services (Tenant, Connectivity, 
+		Password Storage) -->
+	<resource-ref>
+		<res-ref-name>jdbc/xProjectDB</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+	</resource-ref>
+
+	<resource-ref>
+		<res-ref-name>tenantContext</res-ref-name>
+		<res-type>com.sap.cloud.account.TenantContext</res-type>
+	</resource-ref>
+
+	<resource-ref>
+		<res-ref-name>connectivityConfiguration</res-ref-name>
+		<res-type>com.sap.core.connectivity.api.configuration.ConnectivityConfiguration</res-type>
+	</resource-ref>
+
+	<resource-ref>
+		<res-ref-name>PasswordStorage</res-ref-name>
+		<res-type>com.sap.cloud.security.password.PasswordStorage</res-type>
+	</resource-ref>
+
+	<!-- Authentication and authorization settings -->
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+	</login-config>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Protected APIs</web-resource-name>
+			<url-pattern>/api/v1/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>ProjectManager</role-name>
+			<role-name>ProjectMember</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-role>
+		<role-name>ProjectManager</role-name>
+	</security-role>
+	<security-role>
+		<role-name>ProjectMember</role-name>
+	</security-role>
+
+	<filter>
+		<display-name>OAuth scope definition for joining a project</display-name>
+		<filter-name>ListProjectsScopeFilter</filter-name>
+		<filter-class>com.sap.cloud.security.oauth2.OAuthAuthorizationFilter</filter-class>
+		<init-param>
+			<param-name>scope</param-name>
+			<param-value>list-projects</param-value>
+		</init-param>
+		<init-param>
+			<param-name>http-method</param-name>
+			<param-value>GET</param-value>
+		</init-param>
+		<init-param>
+			<param-name>no-session</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>ListProjectsScopeFilter</filter-name>
+		<url-pattern>/api/v1/mobile/projects</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<display-name>OAuth scope definition for joining a project</display-name>
+		<filter-name>JoinProjectScopeFilter</filter-name>
+		<filter-class>com.sap.cloud.security.oauth2.OAuthAuthorizationFilter</filter-class>
+		<init-param>
+			<param-name>scope</param-name>
+			<param-value>join-project</param-value>
+		</init-param>
+		<init-param>
+			<param-name>http-method</param-name>
+			<param-value>POST</param-value>
+		</init-param>
+		<init-param>
+			<param-name>no-session</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>JoinProjectScopeFilter</filter-name>
+		<url-pattern>/api/v1/mobile/projects</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<display-name>OAuth scope definition for managing a project member's
+			timesheets
+		</display-name>
+		<filter-name>ManageTimesheetsScopeFilter</filter-name>
+		<filter-class>com.sap.cloud.security.oauth2.OAuthAuthorizationFilter</filter-class>
+		<init-param>
+			<param-name>scope</param-name>
+			<param-value>manage-timesheets</param-value>
+		</init-param>
+		<init-param>
+			<param-name>http-method</param-name>
+			<param-value>GET POST</param-value>
+		</init-param>
+		<init-param>
+			<param-name>no-session</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>ManageTimesheetsScopeFilter</filter-name>
+		<url-pattern>/api/v1/mobile/timesheets</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>TestDataServlet</servlet-name>
+		<servlet-class>com.sap.cloud.sample.xproject.servlet.TestDataServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TestDataServlet</servlet-name>
+		<url-pattern>/TestDataServlet</url-pattern>
+	</servlet-mapping>
+
+	<filter>
+		<filter-name>CsrfFilter</filter-name>
+		<filter-class>org.apache.catalina.filters.CsrfPreventionFilter</filter-class>
+		<init-param>
+      		<param-name>entryPoints</param-name>
+      		<param-value>/index.jsp</param-value>
+    	</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CsrfFilter</filter-name>
+		<url-pattern>/api/v1/web</url-pattern>
+	</filter-mapping>
+
+</web-app>
