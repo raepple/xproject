@@ -1,4 +1,4 @@
-# xProject sample application for SAP Cloud Platform
+# xProject Java sample application for SAP Cloud Platform
 
 This repository contains the xProject sample application used in units 2, 3 and 4 of week 5 (Security) in the openSAP course [SAP Cloud Platform Essentials (Update Q3/2017)](https://open.sap.com/courses/cp1-2).
 Follow the instructions below to install the application on your local development system and deploy it in your SAP Cloud Platform Neo trial account.
