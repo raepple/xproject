@@ -5,6 +5,29 @@
 	id="WebApp_ID" version="3.0">
 	<display-name>xProject</display-name>
 
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<!-- Servlets -->
+
+	<servlet>
+		<servlet-name>com.sap.cloud.sample.xproject.rest.XProjectApplication</servlet-name>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>com.sap.cloud.sample.xproject.rest.XProjectApplication</servlet-name>
+		<url-pattern>/api/v1/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>TestDataServlet</servlet-name>
+		<servlet-class>com.sap.cloud.sample.xproject.servlet.TestDataServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TestDataServlet</servlet-name>
+		<url-pattern>/TestDataServlet</url-pattern>
+	</servlet-mapping>
+
 	<!-- DB and resource references for required services (Tenant, Connectivity, 
 		Password Storage) -->
 	<resource-ref>
@@ -44,6 +67,13 @@
 		</auth-constraint>
 	</security-constraint>
 
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Public Area</web-resource-name>
+			<url-pattern>/index.jsp</url-pattern>
+		</web-resource-collection>
+	</security-constraint>
+
 	<security-role>
 		<role-name>ProjectManager</role-name>
 	</security-role>
@@ -52,7 +82,7 @@
 	</security-role>
 
 	<filter>
-		<display-name>OAuth scope definition for joining a project</display-name>
+		<display-name>OAuth scope definition for listing projects</display-name>
 		<filter-name>ListProjectsScopeFilter</filter-name>
 		<filter-class>com.sap.cloud.security.oauth2.OAuthAuthorizationFilter</filter-class>
 		<init-param>
@@ -61,7 +91,7 @@
 		</init-param>
 		<init-param>
 			<param-name>http-method</param-name>
-			<param-value>GET</param-value>
+			<param-value>get</param-value>
 		</init-param>
 		<init-param>
 			<param-name>no-session</param-name>
@@ -83,7 +113,7 @@
 		</init-param>
 		<init-param>
 			<param-name>http-method</param-name>
-			<param-value>POST</param-value>
+			<param-value>post</param-value>
 		</init-param>
 		<init-param>
 			<param-name>no-session</param-name>
@@ -107,7 +137,7 @@
 		</init-param>
 		<init-param>
 			<param-name>http-method</param-name>
-			<param-value>GET POST</param-value>
+			<param-value>get post</param-value>
 		</init-param>
 		<init-param>
 			<param-name>no-session</param-name>
@@ -119,26 +149,16 @@
 		<url-pattern>/api/v1/mobile/timesheets</url-pattern>
 	</filter-mapping>
 
-	<servlet>
-		<servlet-name>TestDataServlet</servlet-name>
-		<servlet-class>com.sap.cloud.sample.xproject.servlet.TestDataServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>TestDataServlet</servlet-name>
-		<url-pattern>/TestDataServlet</url-pattern>
-	</servlet-mapping>
-
 	<filter>
 		<filter-name>CsrfFilter</filter-name>
 		<filter-class>org.apache.catalina.filters.CsrfPreventionFilter</filter-class>
 		<init-param>
-      		<param-name>entryPoints</param-name>
-      		<param-value>/index.jsp</param-value>
-    	</init-param>
+			<param-name>entryPoints</param-name>
+			<param-value>/index.jsp</param-value>
+		</init-param>
 	</filter>
 	<filter-mapping>
 		<filter-name>CsrfFilter</filter-name>
 		<url-pattern>/api/v1/web</url-pattern>
 	</filter-mapping>
-
 </web-app>
