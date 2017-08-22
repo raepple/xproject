@@ -1,0 +1,9 @@
+#
+#Wed Jun 28 19:48:23 UTC 2017
+Name=projectAPI
+URL=https\://xprojectXYZ.hanatrial.ondemand.com/xproject/api/v1/web/projects/
+ProxyType=Internet
+Type=HTTP
+CloudConnectorVersion=2
+Authentication=AppToAppSSO
+Description=xProject API for project data
