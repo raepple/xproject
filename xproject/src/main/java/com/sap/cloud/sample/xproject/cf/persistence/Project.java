@@ -1,4 +1,4 @@
-package com.sap.cloud.sample.xproject.persistence;
+package com.sap.cloud.sample.xproject.cf.persistence;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -24,11 +24,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 @Table(name = "PROJECTS")
 
-@NamedQueries({
-	@NamedQuery(name = "AllProjects", query = "SELECT p FROM Project p"),
-	@NamedQuery(name = "ProjectsJoinedByMember", query = "SELECT p FROM Project p WHERE :member MEMBER OF p.members"),
-	@NamedQuery(name = "ProjectsAvailableForMember", query = "SELECT p FROM Project p WHERE :member NOT MEMBER OF p.members")
-})
+@NamedQueries({ @NamedQuery(name = "AllProjects", query = "SELECT p FROM Project p"),
+		@NamedQuery(name = "ProjectsJoinedByMember", query = "SELECT p FROM Project p WHERE :member MEMBER OF p.members"),
+		@NamedQuery(name = "ProjectsAvailableForMember", query = "SELECT p FROM Project p WHERE :member NOT MEMBER OF p.members") })
 
 public class Project {
 
@@ -36,35 +34,35 @@ public class Project {
 	@Column(name = "ID", nullable = false)
 	@GeneratedValue
 	private long projectId;
-	
+
 	@Basic(optional = false)
 	@Column(name = "NAME", nullable = false)
 	private String name;
-	
+
 	@Basic(optional = false)
 	@Column(name = "DESCRIPTION", nullable = false)
 	private String description;
-	
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyyMMdd")
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
 	@Column(name = "START_DATE", nullable = false)
 	@Temporal(TemporalType.DATE)
 	private java.util.Calendar startDate;
-	
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyyMMdd")
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
 	@Column(name = "END_DATE", nullable = false)
 	@Temporal(TemporalType.DATE)
 	private java.util.Calendar endDate;
 
 	@JsonManagedReference
-	@OneToMany(cascade = {CascadeType.ALL})
+	@OneToMany(cascade = { CascadeType.ALL })
 	private Collection<Member> members;
-	
-	@OneToMany(cascade = {CascadeType.ALL})
+
+	@OneToMany(cascade = { CascadeType.ALL })
 	private Collection<Task> tasks;
-	
+
 	@Transient
 	private Boolean joined;
-	
+
 	public long getProjectId() {
 		return projectId;
 	}
@@ -128,15 +126,16 @@ public class Project {
 	public void setJoined(Boolean joined) {
 		this.joined = joined;
 	}
-	
+
 	@PostLoad
 	protected void initJoined() {
-	    joined = new Boolean(false);
+		joined = new Boolean(false);
 	}
-	
-    public boolean equals (Object o) {
-    	Project p = (Project) o;
-        if (p.projectId == projectId) return true;
-        return false;
-    }	
+
+	public boolean equals(Object o) {
+		Project p = (Project) o;
+		if (p.projectId == projectId)
+			return true;
+		return false;
+	}
 }

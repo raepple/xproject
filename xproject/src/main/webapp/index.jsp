@@ -5,6 +5,6 @@
 		<title>xProject Backend</title>
 	</head>
 	<body>
-		<h1>xProject Backend (1.0.0)</h1>
+		<h1>xProject Backend (v1.0.0)</h1>
 	</body>
 </html>

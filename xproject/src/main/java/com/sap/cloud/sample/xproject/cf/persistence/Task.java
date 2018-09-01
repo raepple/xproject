@@ -1,4 +1,4 @@
-package com.sap.cloud.sample.xproject.persistence;
+package com.sap.cloud.sample.xproject.cf.persistence;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -11,24 +11,24 @@ import javax.persistence.Table;
 @Table(name = "TASKS")
 
 public class Task {
-	
+
 	@Id
 	@Column(name = "ID", nullable = false)
 	@GeneratedValue
 	private long taskId;
-	
+
 	@Basic(optional = false)
 	@Column(name = "NAME", nullable = false)
 	private String name;
-	
+
 	@Basic(optional = false)
 	@Column(name = "STATUS", nullable = false)
 	private int status;
-	
+
 	@Basic(optional = false)
 	@Column(name = "DURATION", nullable = false)
 	private long duration;
-		
+
 	public long getTaskId() {
 		return taskId;
 	}

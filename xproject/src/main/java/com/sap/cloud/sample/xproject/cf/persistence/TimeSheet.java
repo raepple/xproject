@@ -1,4 +1,4 @@
-package com.sap.cloud.sample.xproject.persistence;
+package com.sap.cloud.sample.xproject.cf.persistence;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -15,12 +15,11 @@ import javax.persistence.Table;
 @Table(name = "TIMESHEETS")
 
 @NamedQueries({
-	@NamedQuery(name = "FindTimeSheetByMemberAndTask", query = "SELECT t FROM TimeSheet t WHERE t.member = :member AND t.task = :task"),
-	@NamedQuery(name = "ReportedTimeForMemberInProject", query = "SELECT SUM(t.time) FROM TimeSheet t, Project p WHERE t.member MEMBER OF p.members AND p = :project AND t.member = :member GROUP BY t.member"),
-	@NamedQuery(name = "TimeSheetsForMemberInProject", query = "SELECT t FROM TimeSheet t, Project p WHERE t.member MEMBER OF p.members AND p = :project AND t.member = :member"),
-	@NamedQuery(name = "DeleteTimeSheetsForTask", query = "DELETE FROM TimeSheet t WHERE t.task = :task"),
-	@NamedQuery(name = "DeleteTimeSheetsForMember", query = "DELETE FROM TimeSheet t WHERE t.member = :member")
-})
+		@NamedQuery(name = "FindTimeSheetByMemberAndTask", query = "SELECT t FROM TimeSheet t WHERE t.member = :member AND t.task = :task"),
+		@NamedQuery(name = "ReportedTimeForMemberInProject", query = "SELECT SUM(t.time) FROM TimeSheet t, Project p WHERE t.member MEMBER OF p.members AND p = :project AND t.member = :member GROUP BY t.member"),
+		@NamedQuery(name = "TimeSheetsForMemberInProject", query = "SELECT t FROM TimeSheet t, Project p WHERE t.member MEMBER OF p.members AND p = :project AND t.member = :member"),
+		@NamedQuery(name = "DeleteTimeSheetsForTask", query = "DELETE FROM TimeSheet t WHERE t.task = :task"),
+		@NamedQuery(name = "DeleteTimeSheetsForMember", query = "DELETE FROM TimeSheet t WHERE t.member = :member") })
 
 public class TimeSheet {
 
@@ -28,15 +27,15 @@ public class TimeSheet {
 	@Column(name = "ID", nullable = false)
 	@GeneratedValue
 	private long timeSheetId;
-	
-	@OneToOne(optional=false)
+
+	@OneToOne(optional = false)
 	@JoinColumn(name = "MEMBER_ID", nullable = false)
 	private Member member;
-	
-	@OneToOne(optional=false)
+
+	@OneToOne(optional = false)
 	@JoinColumn(name = "TASK_ID", nullable = false)
 	private Task task;
-	
+
 	@Basic(optional = false)
 	@Column(name = "TIME", nullable = false)
 	private double time;
@@ -48,7 +47,7 @@ public class TimeSheet {
 	public void setTimeSheetId(long timeSheetId) {
 		this.timeSheetId = timeSheetId;
 	}
-	
+
 	public Member getMember() {
 		return member;
 	}

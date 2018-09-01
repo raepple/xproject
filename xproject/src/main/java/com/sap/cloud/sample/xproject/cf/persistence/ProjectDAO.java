@@ -1,4 +1,4 @@
-package com.sap.cloud.sample.xproject.persistence;
+package com.sap.cloud.sample.xproject.cf.persistence;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,10 +12,8 @@ import javax.persistence.NoResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.cloud.sample.xproject.Constants;
-import com.sap.cloud.sample.xproject.web.RequestHelper;
-import com.sap.security.um.user.UnsupportedUserAttributeException;
-import com.sap.security.um.user.User;
+import com.sap.cloud.sample.xproject.cf.Constants;
+import com.sap.cloud.sample.xproject.cf.web.User;
 
 public class ProjectDAO extends AbstractDAO {
 
@@ -25,27 +23,24 @@ public class ProjectDAO extends AbstractDAO {
 	public List<Project> getAllProjects() {
 		EntityManager em = createEntityManager();
 		try {
-			List<Project> projects = em.createNamedQuery("AllProjects")
-					.getResultList();
+			List<Project> projects = em.createNamedQuery("AllProjects").getResultList();
 			return projects;
 		} finally {
 			em.close();
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Project> getProjectsJoinedByCurrentUser(User currentUser) {
 		EntityManager em = createEntityManager();
-		try {		
-			List <Project> projectsJoinedByCurrentUser = new ArrayList<>();
- 			List<Member> membersOfCurrentUser;
-				membersOfCurrentUser = em
-						.createNamedQuery("FindMembersByUserId")
-						.setParameter("userid", currentUser.getName()).getResultList();
-			for (Iterator<Member> members = membersOfCurrentUser.iterator(); members.hasNext(); ) {
+		try {
+			List<Project> projectsJoinedByCurrentUser = new ArrayList<>();
+			List<Member> membersOfCurrentUser;
+			membersOfCurrentUser = em.createNamedQuery("FindMembersByUserId")
+					.setParameter("userid", currentUser.getLogonName()).getResultList();
+			for (Iterator<Member> members = membersOfCurrentUser.iterator(); members.hasNext();) {
 				Member memberOfCurrentUser = members.next();
-				List<Project> projectsJoinedByMember = em
-						.createNamedQuery("ProjectsJoinedByMember")
+				List<Project> projectsJoinedByMember = em.createNamedQuery("ProjectsJoinedByMember")
 						.setParameter("member", memberOfCurrentUser).getResultList();
 				projectsJoinedByCurrentUser.addAll(projectsJoinedByMember);
 			}
@@ -140,8 +135,8 @@ public class ProjectDAO extends AbstractDAO {
 			em.close();
 		}
 	}
-	
-	public long addMember(long projectId, Member member) {		
+
+	public long addMember(long projectId, Member member) {
 		Member existingMember = this.findMember(projectId, member.getUserid());
 		if (existingMember == null) {
 			EntityManager em = createEntityManager();
@@ -151,9 +146,8 @@ public class ProjectDAO extends AbstractDAO {
 				Project project = this.findProject(projectId);
 				project.getMembers().add(member);
 				em.merge(project);
-				transaction.commit();				
-				logger.debug("Member with userId " + member.getUserid()
-						+ " added to project " + project.getName());
+				transaction.commit();
+				logger.debug("Member with userId " + member.getUserid() + " added to project " + project.getName());
 			} finally {
 				if (transaction.isActive()) {
 					transaction.rollback();
@@ -164,28 +158,23 @@ public class ProjectDAO extends AbstractDAO {
 		} else {
 			return -1L;
 		}
-			
+
 	}
 
-	public void addCurrentUser(long projectId, User currentUser)
-			throws UnsupportedUserAttributeException {
+	public void addCurrentUser(long projectId, User currentUser) {
+		Member newMember = new Member();
+		newMember.setUserid(currentUser.getLogonName());
+		newMember.setFirstname(currentUser.getFirstName());
+		newMember.setLastname(currentUser.getLastName());
+		newMember.setEmail(currentUser.getEmail());
 
-			RequestHelper helper = new RequestHelper();
-		
-			Member newMember = new Member();
-			newMember.setUserid(currentUser.getName());
-			newMember.setFirstname(helper.getAttribute(Constants.FIRSTNAME));
-			newMember.setLastname(helper.getAttribute(Constants.LASTNAME));
-			newMember.setEmail(helper.getAttribute(Constants.EMAIL));
+		String displayName = currentUser.getAttribute(Constants.DISPLAYNAME);
+		if (displayName == null) {
+			displayName = currentUser.getFirstName() + " " + currentUser.getLastName();
+		}
 
-			String displayName = currentUser.getAttribute(Constants.DISPLAYNAME);
-			if (displayName == null) {
-				displayName = helper.getAttribute(Constants.FIRSTNAME) + " "
-						+ helper.getAttribute(Constants.LASTNAME);
-			}
-
-			newMember.setDisplayName(displayName);
-			addMember(projectId, newMember);
+		newMember.setDisplayName(displayName);
+		addMember(projectId, newMember);
 	}
 
 	public Task findTask(long taskId) {
@@ -198,26 +187,23 @@ public class ProjectDAO extends AbstractDAO {
 		}
 
 	}
-	
+
 	public Member findMember(long projectId, String userId) {
 		EntityManager em = createEntityManager();
 		Project project = this.findProject(projectId);
 		try {
-			Member member = (Member) em
-					.createNamedQuery("FindMemberByUserIdAndProject")
-					.setParameter("userid", userId).
-					setParameter("project", project).getSingleResult();
+			Member member = (Member) em.createNamedQuery("FindMemberByUserIdAndProject").setParameter("userid", userId)
+					.setParameter("project", project).getSingleResult();
 			return member;
 		} catch (NoResultException nre) {
 			logger.debug("User with id " + userId + " not a member in project " + project.getName());
 			return null;
-		}
-		finally {
+		} finally {
 			em.close();
 		}
-		
+
 	}
-	
+
 	public Member findMember(long memberId) {
 		EntityManager em = createEntityManager();
 		Member member = em.find(Member.class, memberId);
@@ -304,8 +290,7 @@ public class ProjectDAO extends AbstractDAO {
 		EntityManager em = createEntityManager();
 		try {
 			Object result = em.createNamedQuery("GetReportedHoursByMemberAndProject")
-					.setParameter("projectId", project.getProjectId())
-					.setParameter("member", member).getSingleResult();
+					.setParameter("projectId", project.getProjectId()).setParameter("member", member).getSingleResult();
 			long reportedHours = 0;
 			if (result != null)
 				reportedHours = ((Long) result).longValue();

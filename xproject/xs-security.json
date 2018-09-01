@@ -1,0 +1,37 @@
+{
+	"xsappname": "xproject",
+	"tenant-mode": "dedicated",
+	"scopes": [
+		{
+			"name": "$XSAPPNAME.ProjectManager",
+			"description": "Project manager scope"
+		},
+		{
+			"name": "$XSAPPNAME.ProjectMember",
+			"description": "Project member scope"
+		}
+	],
+	"role-templates": [
+		{
+			"name": "ProjectMember",
+			"description": "Project member role",
+			"scope-references": [
+				"$XSAPPNAME.ProjectMember"
+			]
+		},
+		{
+			"name": "ProjectManager",
+			"description": "Project member role",
+			"scope-references": [
+				"$XSAPPNAME.ProjectManager"
+			]
+		},
+		{
+			"name": "User",
+			"description": "Authenticated user in xProject",
+			"scope-references": [
+				"uaa.user"
+			]
+		}
+	]
+}

@@ -1,4 +1,4 @@
-package com.sap.cloud.sample.xproject.persistence;
+package com.sap.cloud.sample.xproject.cf.persistence;
 
 import java.util.List;
 
@@ -71,7 +71,8 @@ public class TimeSheetDAO extends AbstractDAO {
 		EntityTransaction transaction = em.getTransaction();
 		transaction.begin();
 		try {
-			int deleted = em.createNamedQuery("DeleteTimeSheetsForMember").setParameter("member", member).executeUpdate();
+			int deleted = em.createNamedQuery("DeleteTimeSheetsForMember").setParameter("member", member)
+					.executeUpdate();
 			transaction.commit();
 			return deleted;
 		} finally {
@@ -97,7 +98,7 @@ public class TimeSheetDAO extends AbstractDAO {
 			em.close();
 		}
 	}
-	
+
 	public void createTimeSheet(String userId, long projectId, long taskId, int time) {
 		EntityManager em = createEntityManager();
 		EntityTransaction transaction = em.getTransaction();
@@ -106,20 +107,20 @@ public class TimeSheetDAO extends AbstractDAO {
 			Project project = em.find(Project.class, projectId);
 			Member memberOfCurrentUserAndProject;
 			try {
-				memberOfCurrentUserAndProject = (Member) em
-						.createNamedQuery("FindMemberByUserIdAndProject")
-						.setParameter("userid", userId).
-						setParameter("project", project).getSingleResult();
+				memberOfCurrentUserAndProject = (Member) em.createNamedQuery("FindMemberByUserIdAndProject")
+						.setParameter("userid", userId).setParameter("project", project).getSingleResult();
 			} catch (NoResultException nre) {
 				// something went wrong - user should be member of the project?
 				return;
 			}
 			Task task = em.find(Task.class, taskId);
-			
+
 			// search for existing timesheet
-			TimeSheet timeSheet = null; 
+			TimeSheet timeSheet = null;
 			try {
-				timeSheet = (TimeSheet) em.createNamedQuery("FindTimeSheetByMemberAndTask").setParameter("member", memberOfCurrentUserAndProject).setParameter("task", task).getSingleResult();
+				timeSheet = (TimeSheet) em.createNamedQuery("FindTimeSheetByMemberAndTask")
+						.setParameter("member", memberOfCurrentUserAndProject).setParameter("task", task)
+						.getSingleResult();
 				// update existing
 				timeSheet.setTime(time);
 				em.merge(timeSheet);
@@ -136,7 +137,7 @@ public class TimeSheetDAO extends AbstractDAO {
 			if (transaction.isActive()) {
 				transaction.rollback();
 			}
-			em.close();		
+			em.close();
 		}
 	}
 }

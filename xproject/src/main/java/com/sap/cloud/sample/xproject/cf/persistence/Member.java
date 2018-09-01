@@ -1,4 +1,4 @@
-package com.sap.cloud.sample.xproject.persistence;
+package com.sap.cloud.sample.xproject.cf.persistence;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -16,21 +16,19 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Entity
 @Table(name = "MEMBERS")
 
-@NamedQueries({
-	@NamedQuery(name = "FindMembersByUserId", query = "SELECT m FROM Member m WHERE m.userid = :userid"),
-	@NamedQuery(name = "FindMemberByUserIdAndProject", query = "SELECT m FROM Member m, Project p WHERE m.userid = :userid AND p = :project AND m MEMBER OF p.members")
-})
+@NamedQueries({ @NamedQuery(name = "FindMembersByUserId", query = "SELECT m FROM Member m WHERE m.userid = :userid"),
+		@NamedQuery(name = "FindMemberByUserIdAndProject", query = "SELECT m FROM Member m, Project p WHERE m.userid = :userid AND p = :project AND m MEMBER OF p.members") })
 
 public class Member {
 	@Id
 	@Column(name = "ID", nullable = false)
 	@GeneratedValue
 	private long memberId;
-	
+
 	@Basic(optional = false)
 	@Column(name = "USERID", nullable = false)
 	private String userid;
-	
+
 	@Basic(optional = true)
 	@Column(name = "FIRSTNAME", nullable = true)
 	private String firstname;
@@ -38,31 +36,31 @@ public class Member {
 	@Basic(optional = true)
 	@Column(name = "LASTNAME", nullable = true)
 	private String lastname;
-	
+
 	@Basic(optional = true)
 	@Column(name = "EMAIL", nullable = true)
 	private String email;
-	
+
 	@Basic(optional = true)
 	@Column(name = "TITLE", nullable = true)
 	private String title;
-	
+
 	@Basic(optional = true)
 	@Column(name = "COUNTRY", nullable = true)
 	private String country;
-	
+
 	@Transient
 	@JsonBackReference
 	private Project project;
-		
+
 	@Transient
 	private String displayName;
-		
+
 	@PostLoad
 	public void onPostLoad() {
 		this.setDisplayName(this.firstname + " " + this.lastname);
 	}
-	
+
 	public void setUserid(String param) {
 		this.userid = param;
 	}
