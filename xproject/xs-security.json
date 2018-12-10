@@ -33,5 +33,9 @@
 				"uaa.user"
 			]
 		}
-	]
+	],
+	"oauth2-configuration": {
+		"token-validity": 60,
+		"system-attributes": ["groups","rolecollections"]
+	}
 }
