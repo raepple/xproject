@@ -1,8 +1,6 @@
 ---
 applications:
 - name: xproject
-  routes:
-  - route: xproject-bestruncf62.cfapps.eu10.hana.ondemand.com
   path: target/xproject.war
   buildpack: sap_java_buildpack
   memory: 1024M
